@@ -1,4 +1,44 @@
-# SubQuery - Starter Package
+# Parallel Crowdloan Subql
+
+## Query user contributions
+```
+{
+ query{
+   contributionEntities(
+    last:100,
+    filter: {
+      paraId: {equalTo: 2001}
+    }
+  ){
+     nodes{
+       id
+       blockHeight
+       paraId
+       account
+       amount
+      referralCode
+     }
+   }
+ }
+}
+```
+
+## Query summary information
+```
+{
+ query{
+   summaryEntities(last:100 ){
+     nodes{
+       id
+       amount
+      	contributions
+     }
+   }
+ }
+}
+```
+
+## SubQuery - Starter Package
 
 
 The Starter Package is an example that you can use as a starting point for developing your SubQuery project.
