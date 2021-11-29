@@ -1,0 +1,25 @@
+specVersion: 0.2.0
+name: parallel-crowdloan-subql
+version: 1.0.0
+description: ''
+repository: ''
+schema:
+  file: ./schema.graphql
+network:
+  genesisHash: '0x5fc087582e8a2d812d2d8f60a32f1155fd06d12da85fae7b6f648680f04f0d14'
+  endpoint: 'wss://staging-rpc.parallel.fi'
+dataSources:
+  - kind: substrate/Runtime
+    startBlock: 1
+    mapping:
+      file: ./dist/index.js
+      handlers:
+        - handler: handleBlock
+          kind: substrate/BlockHandler
+        - handler: handleEvent
+          kind: substrate/EventHandler
+          filter:
+            module: balances
+            method: Deposit
+        - handler: handleCall
+          kind: substrate/CallHandler
