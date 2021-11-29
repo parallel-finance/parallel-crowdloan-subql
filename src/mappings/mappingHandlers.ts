@@ -1,5 +1,5 @@
 import { SubstrateExtrinsic, SubstrateEvent, SubstrateBlock } from "@subql/types";
-import { ContributionEntity } from "../types";
+import { ContributionEntity, SummaryEntity } from "../types";
 import { Extrinsic } from "@polkadot/types/interfaces";
 import type { Vec, Result, Null, Option } from "@polkadot/types";
 
@@ -34,7 +34,7 @@ export async function handleCall(extrinsic: SubstrateExtrinsic): Promise<void> {
 
     const [_paraId, referralCode] = parseRemark(remarkRaw).split("#");
 
-    const record = ContributionEntity.create({
+    const contributionRecord = ContributionEntity.create({
         id: extrinsic.extrinsic.hash.toString(),
 
         blockHeight: extrinsic.block.block.header.number.toNumber(),
@@ -44,7 +44,22 @@ export async function handleCall(extrinsic: SubstrateExtrinsic): Promise<void> {
         referralCode,
         timestamp: extrinsic.block.timestamp,
     });
-    logger.info(JSON.stringify(record));
+    logger.info(JSON.stringify(contributionRecord));
 
-    await record.save();
+    await contributionRecord.save();
+
+    let summaryRecord = await SummaryEntity.get(paraIdRaw.toString());
+    if (summaryRecord) {
+        summaryRecord.contributions += 1;
+        summaryRecord.amount = (BigInt(summaryRecord.amount) + BigInt(amountRaw.toString())).toString()
+    } else {
+        summaryRecord = SummaryEntity.create({
+            id: paraIdRaw.toString(),
+            contributions: 1,
+            amount: amountRaw.toString(),
+        });
+    }
+    logger.info(JSON.stringify(summaryRecord));
+
+    await summaryRecord.save();
 }

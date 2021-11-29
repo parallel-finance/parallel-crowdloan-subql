@@ -8,3 +8,10 @@ type ContributionEntity @entity {
   referralCode: String
   timestamp: Date!
 }
+
+type SummaryEntity @entity {
+  id: ID!
+
+  contributions: Int!
+  amount: String!
+}
