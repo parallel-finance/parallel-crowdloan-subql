@@ -2,7 +2,7 @@ specVersion: 0.2.0
 name: parallel-crowdloan-subql
 version: 1.0.0
 description: ''
-repository: ''
+repository: 'https://github.com/parallel-finance/parallel-crowdloan-subql'
 schema:
   file: ./schema.graphql
 network:
@@ -14,12 +14,5 @@ dataSources:
     mapping:
       file: ./dist/index.js
       handlers:
-        - handler: handleBlock
-          kind: substrate/BlockHandler
-        - handler: handleEvent
-          kind: substrate/EventHandler
-          filter:
-            module: balances
-            method: Deposit
         - handler: handleCall
           kind: substrate/CallHandler

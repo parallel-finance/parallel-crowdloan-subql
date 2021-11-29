@@ -19,7 +19,7 @@ export async function handleCall(extrinsic: SubstrateExtrinsic): Promise<void> {
     if (
         calls.length !== 2 ||
         !checkTransaction("system", "remark", calls[0]) ||
-        !checkTransaction("balances", "transfer", calls[1])
+        !checkTransaction("crowdloans", "contribute", calls[1])
     ) {
         return;
     }
@@ -28,17 +28,17 @@ export async function handleCall(extrinsic: SubstrateExtrinsic): Promise<void> {
             args: [remarkRaw],
         },
         {
-            args: [_addressRaw, amountRaw],
+            args: [paraIdRaw, amountRaw],
         },
     ] = calls.toArray();
 
-    const [paraId, referralCode] = parseRemark(remarkRaw).split("#");
+    const [_paraId, referralCode] = parseRemark(remarkRaw).split("#");
 
     const record = ContributionEntity.create({
         id: extrinsic.extrinsic.hash.toString(),
 
         blockHeight: extrinsic.block.block.header.number.toNumber(),
-        paraId: parseInt(paraId),
+        paraId: parseInt(paraIdRaw.toString()),
         account: extrinsic.extrinsic.signer.toString(),
         amount: amountRaw.toString(),
         referralCode,
