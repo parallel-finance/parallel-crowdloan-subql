@@ -1,12 +1,7 @@
 import { SubstrateExtrinsic, SubstrateEvent, SubstrateBlock } from "@subql/types";
-import { ContributionEntity, SummaryEntity } from "../types";
+import { Contribution, VaultSummary } from "../types";
 import { Extrinsic } from "@polkadot/types/interfaces";
 import type { Vec, Result, Null, Option } from "@polkadot/types";
-
-const parseRemark = (remark: { toString: () => string }) => {
-    logger.info(`Remark is ${remark.toString()}`);
-    return Buffer.from(remark.toString().slice(2), "hex").toString("utf8");
-};
 
 const checkTransaction = (sectionFilter: string, methodFilter: string, call: Extrinsic) => {
     const { section, method } = api.registry.findMetaCall(call.callIndex);
@@ -15,45 +10,32 @@ const checkTransaction = (sectionFilter: string, methodFilter: string, call: Ext
 
 
 export async function handleCall(extrinsic: SubstrateExtrinsic): Promise<void> {
-    const calls = extrinsic.extrinsic.args[0] as Vec<Extrinsic>;
-    if (
-        calls.length !== 2 ||
-        !checkTransaction("system", "remark", calls[0]) ||
-        !checkTransaction("crowdloans", "contribute", calls[1])
-    ) {
+    const call = extrinsic.extrinsic;
+    if (!checkTransaction("crowdloans", "contribute", call)) {
         return;
     }
-    const [
-        {
-            args: [remarkRaw],
-        },
-        {
-            args: [paraIdRaw, amountRaw],
-        },
-    ] = calls.toArray();
+    const { args: [paraIdRaw, amountRaw, referralCodeRaw] } = call;
 
-    const [_paraId, referralCode] = parseRemark(remarkRaw).split("#");
-
-    const contributionRecord = ContributionEntity.create({
+    const contributionRecord = Contribution.create({
         id: extrinsic.extrinsic.hash.toString(),
 
         blockHeight: extrinsic.block.block.header.number.toNumber(),
         paraId: parseInt(paraIdRaw.toString()),
         account: extrinsic.extrinsic.signer.toString(),
         amount: amountRaw.toString(),
-        referralCode,
+        referralCode: referralCodeRaw.toString(),
         timestamp: extrinsic.block.timestamp,
     });
     logger.info(JSON.stringify(contributionRecord));
 
     await contributionRecord.save();
 
-    let summaryRecord = await SummaryEntity.get(paraIdRaw.toString());
+    let summaryRecord = await VaultSummary.get(paraIdRaw.toString());
     if (summaryRecord) {
         summaryRecord.contributions += 1;
         summaryRecord.amount = (BigInt(summaryRecord.amount) + BigInt(amountRaw.toString())).toString()
     } else {
-        summaryRecord = SummaryEntity.create({
+        summaryRecord = VaultSummary.create({
             id: paraIdRaw.toString(),
             contributions: 1,
             amount: amountRaw.toString(),

@@ -1,10 +1,10 @@
 # Parallel Crowdloan Subql
 
-## Query user contributions
+## Query user contributions and summary information
 ```
 {
  query{
-   contributionEntities(
+   contributions(
     last:100,
     filter: {
       paraId: {equalTo: 2001}
@@ -19,15 +19,7 @@
       referralCode
      }
    }
- }
-}
-```
-
-## Query summary information
-```
-{
- query{
-   summaryEntities(last:100 ){
+  vaultSummaries(last:100 ){
      nodes{
        id
        amount

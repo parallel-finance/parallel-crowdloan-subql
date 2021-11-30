@@ -1,15 +1,15 @@
-type ContributionEntity @entity {
+type Contribution @entity {
   id: ID!
 
   blockHeight: Int! @index
   paraId: Int! @index
-  account: String!
+  account: String! @index
   amount: String!
   referralCode: String
   timestamp: Date!
 }
 
-type SummaryEntity @entity {
+type VaultSummary @entity {
   id: ID!
 
   contributions: Int!

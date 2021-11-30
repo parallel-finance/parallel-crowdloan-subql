@@ -6,7 +6,7 @@ repository: 'https://github.com/parallel-finance/parallel-crowdloan-subql'
 schema:
   file: ./schema.graphql
 network:
-  genesisHash: '0x5fc087582e8a2d812d2d8f60a32f1155fd06d12da85fae7b6f648680f04f0d14'
+  genesisHash: ''
   endpoint: 'wss://staging-rpc.parallel.fi'
 dataSources:
   - kind: substrate/Runtime
