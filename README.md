@@ -71,7 +71,6 @@ Last, under the project directory, run following command to install all the depe
 yarn install
 ```
 
-
 ## Configure your project
 
 In the starter package, we have provided a simple example of project configuration. You will be mainly working on the following files:
