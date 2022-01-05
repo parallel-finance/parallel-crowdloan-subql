@@ -1,8 +1,9 @@
 type Contribution @entity {
   id: ID!
 
-  blockHeight: Int! @index
   paraId: Int! @index
+  vaultId: Int!
+  blockHeight: Int! @index
   account: String! @index
   amount: String!
   referralCode: String
@@ -15,3 +16,4 @@ type VaultSummary @entity {
   contributions: Int!
   amount: String!
 }
+
