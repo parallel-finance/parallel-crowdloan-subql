@@ -2,7 +2,6 @@ type Contribution @entity {
   id: ID!
 
   paraId: Int! @index
-  vaultId: Int!
   blockHeight: Int! @index
   account: String! @index
   amount: String!

@@ -7,7 +7,7 @@ export class CrowdloanHandler {
         event: { method },
       } = substrateEvent;
 
-      if (method === 'VaultContributed') {
+      if (method === 'VaultContributing') {
         await this.handleContributed(substrateEvent);
       }
     }
@@ -18,14 +18,13 @@ export class CrowdloanHandler {
         extrinsic,
     }: SubstrateEvent) {
         logger.info(JSON.parse(data.toString()))
-        const [paraId, vaultId, contributor, amount, referralCode] = 
-            JSON.parse(data.toString()) as [number, number, string, string, string];
+        const [paraId, account, amount, referralCode] = 
+            JSON.parse(data.toString()) as [number, string, string, string];
         const contributionRecord = Contribution.create({
             id: extrinsic.extrinsic.hash.toString(),
-            vaultId,
             blockHeight: header.number.toNumber(),
             paraId,
-            account: contributor,
+            account,
             amount,
             referralCode,
             timestamp: timestamp,
