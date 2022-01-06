@@ -10,7 +10,7 @@ network:
   endpoint: 'wss://staging-rpc.parallel.fi'
 dataSources:
   - kind: substrate/Runtime
-    startBlock: 11940
+    startBlock: 1
     mapping:
       file: ./dist/index.js
       handlers:
