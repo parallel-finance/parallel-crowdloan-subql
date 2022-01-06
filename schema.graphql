@@ -10,10 +10,17 @@ type Contribution @entity {
   timestamp: Date!
 }
 
-type VaultSummary @entity {
+type Vaults @entity {
   id: ID!
-
+  createdAt: String
+  paraId: Int! @index
+  vaultId: Int!
+  ctokenId: Int!
+  phase: String!
   contributions: Int!
-  amount: String!
+  totalAmount: String!
+  contributionStrategy: String!
+  cap: String!
+  endBlock: Int!
+  trieIndex: Int!
 }
-
