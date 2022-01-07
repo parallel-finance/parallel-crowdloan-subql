@@ -6,12 +6,12 @@ export const handleVaultCreated = async ({
     extrinsic: { extrinsic: { hash } },
 }: SubstrateEvent) => {
     const [paraId, vaultId, ctokenId, phase, contributionStrategy, cap, endBlock, trieIndex] = 
-        JSON.parse(data.toString()) as [number, number, number, string, string, string, number, number];
+        JSON.parse(data.toString()) as [number, number[], number, string, string, string, number, number];
     const vaultRecord = Vaults.create({
-        id: paraId.toString() + '-' + vaultId.toString(),
+        id: paraId.toString() + '-' + vaultId[0].toString() + '-' + vaultId[1].toString(),
         createdAt: hash.toString(),
         paraId,
-        vaultId,
+        vaultId: vaultId[0].toString() + '-' + vaultId[1].toString(),
         ctokenId,
         phase,
         contributions: 0,
@@ -32,15 +32,15 @@ export const handleVaultCreated = async ({
 
 export const handleVaultUpdated = async ({ event: { data } }: SubstrateEvent) => {
     const [paraId, vaultId, contributionStrategy, cap, endBlock] = 
-        JSON.parse(data.toString()) as [number, number, string, string, number];
+        JSON.parse(data.toString()) as [number, number[], string, string, number];
 
-    let vault = paraId.toString() + '-' + vaultId.toString()
+    let vault = paraId.toString() + '-' + vaultId[0].toString() + '-' + vaultId[1].toString()
     let vaultRecord = await Vaults.get(vault);
     if (vaultRecord) {
         vaultRecord.contributionStrategy = contributionStrategy;
         vaultRecord.cap = cap;
         vaultRecord.endBlock = endBlock;
-        logger.info(`VaultUpdated: ${JSON.stringify(vaultRecord)}`);
+        logger.info(`handle VaultUpdated: ${JSON.stringify(vaultRecord)}`);
     } else {
         logger.error(`cannot update the vault which is not found: ${JSON.stringify(vault)}`);
     }

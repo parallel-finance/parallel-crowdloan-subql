@@ -8,10 +8,10 @@ export const handleContributed = async ({
     extrinsic,
 }: SubstrateEvent) => {
     const [paraId, vaultId, contributor, amount, referralCode] = 
-        JSON.parse(data.toString()) as [number, number, string, string, string];
+        JSON.parse(data.toString()) as [number, number[], string, string, string];
     const contributionRecord = Contribution.create({
         id: extrinsic.extrinsic.hash.toString(),
-        vaultId,
+        vaultId: vaultId[0].toString() + '-' + vaultId[1].toString(),
         blockHeight: header.number.toNumber(),
         paraId,
         account: contributor,
@@ -19,13 +19,13 @@ export const handleContributed = async ({
         referralCode,
         timestamp: timestamp,
     });
-    logger.info(`handle handleContributed ${JSON.stringify(contributionRecord)}`);
+    logger.info(`handle Contributed ${JSON.stringify(contributionRecord)}`);
 
     try {
         await contributionRecord.save();
         
         // Update vault summary if contributed
-        let vault = paraId.toString() + '-' + vaultId.toString()
+        let vault = paraId.toString() + '-' + vaultId[0].toString() + '-' + vaultId[1].toString()
         await updateVaultSummary(vault, amount)
     } catch (error) {
       logger.error('handle Contributed error: ', error);
