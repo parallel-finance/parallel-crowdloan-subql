@@ -1,5 +1,5 @@
 import { SubstrateEvent } from '@subql/types';
-import { CrowdloanHandler } from '../handlers/contributions';
+import { CrowdloanHandler } from './crowdloans';
 
 export class EventHandler {
   private event: SubstrateEvent;
