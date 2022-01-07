@@ -2,7 +2,7 @@ type Contribution @entity {
   id: ID!
 
   paraId: Int! @index
-  vaultId: Int!
+  vaultId: String!
   blockHeight: Int! @index
   account: String! @index
   amount: String!
@@ -14,7 +14,7 @@ type Vaults @entity {
   id: ID!
   createdAt: String
   paraId: Int! @index
-  vaultId: Int!
+  vaultId: String!
   ctokenId: Int!
   phase: String!
   contributions: Int!

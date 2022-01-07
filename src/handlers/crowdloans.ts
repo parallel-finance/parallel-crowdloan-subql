@@ -9,7 +9,7 @@ export class CrowdloanHandler {
         if (method in CROWDLOANEXECUTORS) {
             await CROWDLOANEXECUTORS[method](substrateEvent);
         } else {
-            logger.warn(`Ignore unknown method`)
+            logger.warn(`Ignore unknown crowdloan method`)
         }
     }
 }
