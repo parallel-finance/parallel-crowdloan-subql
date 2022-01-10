@@ -1,29 +1,30 @@
 {
-    "name": "parallel-crowdloan-subql",
-    "version": "1.0.0",
-    "description": "",
-    "main": "dist/index.js",
-    "scripts": {
-        "build": "tsc -b",
-        "prepack": "rm -rf dist && npm build",
-        "test": "jest",
-        "codegen": "./node_modules/.bin/subql codegen",
-        "docker-compose": "docker-compose pull && docker-compose up",
-        "launch": "rm -rf .data && yarn codegen && yarn build && yarn docker-compose"
-    },
-    "homepage": "https://github.com/subquery/subql-starter",
-    "repository": "github:subquery/subql-starter",
-    "files": [
-        "dist",
-        "schema.graphql",
-        "project.yaml"
-    ],
-    "author": "Parallel Team",
-    "license": "MIT",
-    "devDependencies": {
-        "@polkadot/api": "^6",
-        "@subql/types": "latest",
-        "typescript": "^4.1.3",
-        "@subql/cli": "latest"
-    }
+  "name": "parallel-crowdloan-subql",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc -b",
+    "prepack": "rm -rf dist && npm build",
+    "test": "jest",
+    "codegen": "./node_modules/.bin/subql codegen",
+    "format": "prettier --config .prettierrc.json 'src/**/*.ts' --write",
+    "docker-compose": "docker-compose pull && docker-compose up",
+    "launch": "rm -rf .data && yarn codegen && yarn build && yarn docker-compose"
+  },
+  "homepage": "https://github.com/subquery/subql-starter",
+  "repository": "github:subquery/subql-starter",
+  "files": ["dist", "schema.graphql", "project.yaml"],
+  "author": "Parallel Team",
+  "license": "MIT",
+  "devDependencies": {
+    "@polkadot/api": "^6",
+    "@subql/types": "latest",
+    "typescript": "^4.1.3",
+    "@subql/cli": "latest",
+    "@typescript-eslint/eslint-plugin": "^4.28.3",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-prettier": "^3.4.0",
+    "prettier": "^2.3.2"
+  }
 }
