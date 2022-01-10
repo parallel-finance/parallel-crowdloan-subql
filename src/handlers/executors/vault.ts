@@ -119,6 +119,21 @@ export const handleVaultPhaseUpdated = async ({
   }
 }
 
+export const handleVaultDissolved = async ({
+  event: { data }
+}: SubstrateEvent) => {
+  const [paraId, vaultId] = JSON.parse(data.toString()) as [number, number[]]
+
+  let vault =
+    paraId.toString() +
+    '-' +
+    vaultId[0].toString() +
+    '-' +
+    vaultId[1].toString()
+  await Vaults.remove(vault)
+  logger.info(`handle VaultDissolved: ${vault}`)
+}
+
 export const updateVaultSummary = async (vault: string, amount: string) => {
   let vaultRecord = await Vaults.get(vault)
   if (vaultRecord) {

@@ -1,7 +1,8 @@
 import {
   handleVaultCreated,
   handleVaultUpdated,
-  handleVaultPhaseUpdated
+  handleVaultPhaseUpdated,
+  handleVaultDissolved
 } from './vault'
 import { SubstrateEvent } from '@subql/types'
 import { handleContributed } from './contribution'
@@ -12,5 +13,6 @@ export const CROWDLOANEXECUTORS: { [method: string]: Executor } = {
   ['VaultCreated']: handleVaultCreated,
   ['VaultContributed']: handleContributed,
   ['VaultUpdated']: handleVaultUpdated,
-  ['VaultPhaseUpdated']: handleVaultPhaseUpdated
+  ['VaultPhaseUpdated']: handleVaultPhaseUpdated,
+  ['VaultDissolved']: handleVaultDissolved
 }
