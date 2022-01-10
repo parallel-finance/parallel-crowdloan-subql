@@ -12,6 +12,7 @@ type Contribution @entity {
 
 type Vaults @entity {
   id: ID!
+
   createdAt: String
   paraId: Int! @index
   vaultId: String!
