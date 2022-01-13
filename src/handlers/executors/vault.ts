@@ -1,6 +1,10 @@
 import { SubstrateEvent } from '@subql/types'
 import { Vaults } from '../../types'
 
+export function aggregateIntoId(paraId: string, leaseStart: string, leaseEnd: string) {
+  return paraId + '-' + leaseStart + '-' + leaseEnd
+}
+
 export const handleVaultCreated = async ({
   event: { data },
   extrinsic: {
@@ -27,12 +31,7 @@ export const handleVaultCreated = async ({
     number
   ]
   const vaultRecord = Vaults.create({
-    id:
-      paraId.toString() +
-      '-' +
-      vaultId[0].toString() +
-      '-' +
-      vaultId[1].toString(),
+    id: aggregateIntoId(paraId.toString(), vaultId[0].toString(), vaultId[1].toString()),
     createdAt: hash.toString(),
     paraId,
     vaultId: vaultId[0].toString() + '-' + vaultId[1].toString(),
@@ -61,12 +60,7 @@ export const handleVaultUpdated = async ({
     data.toString()
   ) as [number, number[], string, string, number]
 
-  let vault =
-    paraId.toString() +
-    '-' +
-    vaultId[0].toString() +
-    '-' +
-    vaultId[1].toString()
+  let vault = aggregateIntoId(paraId.toString(), vaultId[0].toString(), vaultId[1].toString());
   let vaultRecord = await Vaults.get(vault)
   if (vaultRecord) {
     vaultRecord.contributionStrategy = contributionStrategy
@@ -96,12 +90,7 @@ export const handleVaultPhaseUpdated = async ({
     string
   ]
 
-  let vault =
-    paraId.toString() +
-    '-' +
-    vaultId[0].toString() +
-    '-' +
-    vaultId[1].toString()
+  let vault = aggregateIntoId(paraId.toString(), vaultId[0].toString(), vaultId[1].toString());
   let vaultRecord = await Vaults.get(vault)
   if (vaultRecord) {
     vaultRecord.phase = curPhase
@@ -124,12 +113,7 @@ export const handleVaultDissolved = async ({
 }: SubstrateEvent) => {
   const [paraId, vaultId] = JSON.parse(data.toString()) as [number, number[]]
 
-  let vault =
-    paraId.toString() +
-    '-' +
-    vaultId[0].toString() +
-    '-' +
-    vaultId[1].toString()
+  let vault = aggregateIntoId(paraId.toString(), vaultId[0].toString(), vaultId[1].toString());
   await Vaults.remove(vault)
   logger.info(`handle VaultDissolved: ${vault}`)
 }
