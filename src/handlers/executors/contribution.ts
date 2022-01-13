@@ -1,6 +1,7 @@
-import { updateVaultSummary } from './vault'
+import { updateVaultSummary, aggregateIntoId } from './vault'
 import { SubstrateEvent } from '@subql/types'
 import { Contribution } from '../../types'
+import { convertToAnyChainAddress } from '../utils/address'
 
 export const handleContributed = async ({
   event: { data },
@@ -18,7 +19,7 @@ export const handleContributed = async ({
     vaultId: vaultId[0].toString() + '-' + vaultId[1].toString(),
     blockHeight: header.number.toNumber(),
     paraId,
-    account: contributor,
+    account: convertToAnyChainAddress(contributor),
     amount,
     referralCode,
     timestamp: timestamp
@@ -29,12 +30,7 @@ export const handleContributed = async ({
     await contributionRecord.save()
 
     // Update vault summary if contributed
-    let vault =
-      paraId.toString() +
-      '-' +
-      vaultId[0].toString() +
-      '-' +
-      vaultId[1].toString()
+    let vault = aggregateIntoId(paraId.toString(), vaultId[0].toString(), vaultId[1].toString())
     await updateVaultSummary(vault, amount)
   } catch (error) {
     logger.error('handle Contributed error: ', error)
