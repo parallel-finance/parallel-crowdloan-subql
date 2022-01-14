@@ -7,7 +7,7 @@ schema:
   file: ./schema.graphql
 network:
   genesisHash: ''
-  endpoint: 'wss://regnet2-rpc.parallel.fi'
+  endpoint: 'wss://staging-rpc.parallel.fi'
 dataSources:
   - kind: substrate/Runtime
     startBlock: 1
