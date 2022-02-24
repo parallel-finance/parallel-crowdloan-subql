@@ -2,20 +2,17 @@ type Contribution @entity {
   id: ID!
 
   paraId: Int! @index
-  vaultId: String!
+  vault: Vaults! @index
   blockHeight: Int! @index
   account: String! @index
   amount: String!
-  referralCode: String
   timestamp: Date!
 }
 
 type Vaults @entity {
   id: ID!
-
-  createdAt: String
+  createdAt: Int
   paraId: Int! @index
-  vaultId: String!
   ctokenId: Int!
   phase: String!
   contributions: Int!
@@ -23,5 +20,10 @@ type Vaults @entity {
   contributionStrategy: String!
   cap: String!
   endBlock: Int!
-  trieIndex: Int!
+}
+
+type VaultsDissolve @entity {
+  id: ID!
+  vault: Vaults! @index
+  dissolvedBlockHeight: Int! @index
 }

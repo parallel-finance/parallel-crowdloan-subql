@@ -1,16 +1,19 @@
 import { SubstrateEvent } from '@subql/types'
-import { Vaults } from '../../types'
+import { Vaults, VaultsDissolve } from '../../types'
 import { ensureStrNumber } from '../utils/decimalts'
 
-export function aggregateIntoId(paraId: string, leaseStart: string, leaseEnd: string) {
+export function aggregateIntoId(
+  paraId: string,
+  leaseStart: string,
+  leaseEnd: string
+) {
   return paraId + '-' + leaseStart + '-' + leaseEnd
 }
 
 export const handleVaultCreated = async ({
   event: { data },
-  block: { block: { header }},
-  extrinsic: {
-    extrinsic: { hash }
+  block: {
+    block: { header }
   }
 }: SubstrateEvent) => {
   const [
@@ -21,7 +24,7 @@ export const handleVaultCreated = async ({
     contributionStrategy,
     cap,
     endBlock,
-    trieIndex
+    _
   ] = JSON.parse(data.toString()) as [
     number,
     number[],
@@ -33,24 +36,30 @@ export const handleVaultCreated = async ({
     number
   ]
   const vaultRecord = Vaults.create({
-    id: aggregateIntoId(paraId.toString(), vaultId[0].toString(), vaultId[1].toString()),
-    createdAt: hash.toString(),
+    id: aggregateIntoId(
+      paraId.toString(),
+      vaultId[0].toString(),
+      vaultId[1].toString()
+    ),
+    createdAt: header.number.toNumber(),
     paraId,
-    vaultId: vaultId[0].toString() + '-' + vaultId[1].toString(),
     ctokenId,
     phase,
     contributions: 0,
     totalAmount: '0',
     contributionStrategy,
     cap: ensureStrNumber(cap),
-    endBlock: endBlock,
-    trieIndex: trieIndex,
+    endBlock: endBlock
   })
 
   try {
     await vaultRecord.save()
 
-    logger.info(`#${header.number.toNumber()} handle VaultCreated ${JSON.stringify(vaultRecord)}`)
+    logger.info(
+      `#${header.number.toNumber()} handle VaultCreated ${JSON.stringify(
+        vaultRecord
+      )}`
+    )
   } catch (error) {
     logger.error('handle VaultCreated error: ', error)
   }
@@ -58,18 +67,23 @@ export const handleVaultCreated = async ({
 
 export const handleVaultUpdated = async ({
   event: { data },
-  block: { block: { header }},
+  block: {
+    block: { header }
+  }
 }: SubstrateEvent) => {
   const [paraId, vaultId, contributionStrategy, cap, endBlock] = JSON.parse(
     data.toString()
   ) as [number, number[], string, string, number]
 
-  let vault = aggregateIntoId(paraId.toString(), vaultId[0].toString(), vaultId[1].toString());
+  let vault = aggregateIntoId(
+    paraId.toString(),
+    vaultId[0].toString(),
+    vaultId[1].toString()
+  )
   let vaultRecord = await Vaults.get(vault)
   if (vaultRecord) {
     vaultRecord.contributionStrategy = contributionStrategy
-    vaultRecord.cap = ensureStrNumber(cap),
-    vaultRecord.endBlock = endBlock
+    ;(vaultRecord.cap = ensureStrNumber(cap)), (vaultRecord.endBlock = endBlock)
   } else {
     logger.error(
       `cannot update the vault which is not found: ${JSON.stringify(vault)}`
@@ -79,7 +93,11 @@ export const handleVaultUpdated = async ({
   try {
     await vaultRecord.save()
 
-    logger.info(`#${header.number.toNumber()} handle VaultUpdated: ${JSON.stringify(vaultRecord)}`)
+    logger.info(
+      `#${header.number.toNumber()} handle VaultUpdated: ${JSON.stringify(
+        vaultRecord
+      )}`
+    )
   } catch (error) {
     logger.error('handle VaultUpdated error: ', error)
   }
@@ -87,7 +105,9 @@ export const handleVaultUpdated = async ({
 
 export const handleVaultPhaseUpdated = async ({
   event: { data },
-  block: { block: { header }},
+  block: {
+    block: { header }
+  }
 }: SubstrateEvent) => {
   const [paraId, vaultId, prePhase, curPhase] = JSON.parse(data.toString()) as [
     number,
@@ -96,7 +116,11 @@ export const handleVaultPhaseUpdated = async ({
     string
   ]
 
-  let vault = aggregateIntoId(paraId.toString(), vaultId[0].toString(), vaultId[1].toString());
+  let vault = aggregateIntoId(
+    paraId.toString(),
+    vaultId[0].toString(),
+    vaultId[1].toString()
+  )
   let vaultRecord = await Vaults.get(vault)
   if (vaultRecord) {
     vaultRecord.phase = curPhase
@@ -109,21 +133,40 @@ export const handleVaultPhaseUpdated = async ({
   try {
     await vaultRecord.save()
 
-    logger.info(`#${header.number.toNumber()} handle VaultPhaseUpdated: ${JSON.stringify(vaultRecord)}`)
+    logger.info(
+      `#${header.number.toNumber()} handle VaultPhaseUpdated: ${JSON.stringify(
+        vaultRecord
+      )}`
+    )
   } catch (error) {
     logger.error('handle VaultPhaseUpdated error: ', error)
   }
 }
 
 export const handleVaultDissolved = async ({
+  idx,
   event: { data },
-  block: { block: { header }},
+  block: {
+    block: { header }
+  }
 }: SubstrateEvent) => {
   const [paraId, vaultId] = JSON.parse(data.toString()) as [number, number[]]
 
-  let vault = aggregateIntoId(paraId.toString(), vaultId[0].toString(), vaultId[1].toString());
+  let aggregateVaultId = aggregateIntoId(
+    paraId.toString(),
+    vaultId[0].toString(),
+    vaultId[1].toString()
+  )
   try {
-    await Vaults.remove(vault)
+    await VaultsDissolve.create({
+      id: idx.toString(),
+      vaultId: aggregateVaultId,
+      dissolvedBlockHeight: header.number.toNumber()
+    }).save()
+
+    let vault = await Vaults.get(aggregateVaultId)
+    vault.phase = 'Cancelled'
+    await vault.save()
     logger.info(`#${header.number.toNumber()} handle VaultDissolved: ${vault}`)
   } catch (error) {
     logger.error('handle VaultDissolved error: ', error)
@@ -134,9 +177,9 @@ export const updateVaultSummary = async (vault: string, amount: string) => {
   let vaultRecord = await Vaults.get(vault)
   if (vaultRecord) {
     vaultRecord.contributions += 1
-    vaultRecord.totalAmount = ensureStrNumber((
-      BigInt(vaultRecord.totalAmount) + BigInt(amount)
-    ).toString())
+    vaultRecord.totalAmount = ensureStrNumber(
+      (BigInt(vaultRecord.totalAmount) + BigInt(amount)).toString()
+    )
   } else {
     logger.error(
       `Cannot update the vault which is not found: ${JSON.stringify(vault)}`
