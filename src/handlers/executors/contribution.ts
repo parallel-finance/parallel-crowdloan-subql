@@ -13,7 +13,7 @@ export const handleContributed = async ({
   },
   extrinsic
 }: SubstrateEvent) => {
-  const [paraId, vaultId, contributor, amount, _] = JSON.parse(
+  const [paraId, vaultId, contributor, amount] = JSON.parse(
     data.toString()
   ) as [number, number[], string, string, string]
   const contributionRecord = Contribution.create({

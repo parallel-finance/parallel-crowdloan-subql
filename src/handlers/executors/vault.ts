@@ -23,8 +23,7 @@ export const handleVaultCreated = async ({
     phase,
     contributionStrategy,
     cap,
-    endBlock,
-    _
+    endBlock
   ] = JSON.parse(data.toString()) as [
     number,
     number[],
@@ -83,7 +82,8 @@ export const handleVaultUpdated = async ({
   let vaultRecord = await Vaults.get(vault)
   if (vaultRecord) {
     vaultRecord.contributionStrategy = contributionStrategy
-    ;(vaultRecord.cap = ensureStrNumber(cap)), (vaultRecord.endBlock = endBlock)
+    vaultRecord.cap = ensureStrNumber(cap)
+    vaultRecord.endBlock = endBlock
   } else {
     logger.error(
       `cannot update the vault which is not found: ${JSON.stringify(vault)}`
