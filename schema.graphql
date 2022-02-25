@@ -1,6 +1,6 @@
 type Contribution @entity {
   id: ID!
-
+  extrinsicHash: String! @index
   paraId: Int! @index
   vault: Vaults! @index
   blockHeight: Int! @index
@@ -22,8 +22,9 @@ type Vaults @entity {
   endBlock: Int!
 }
 
-type VaultsDissolve @entity {
+type DissolvedVault @entity {
   id: ID!
-  vault: Vaults! @index
+  vaultId: String! @index
+  createdAt: Int! @index
   dissolvedBlockHeight: Int! @index
 }

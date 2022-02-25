@@ -1,5 +1,5 @@
 import { SubstrateEvent } from '@subql/types'
-import { Vaults, VaultsDissolve } from '../../types'
+import { DissolvedVault, Vaults } from '../../types'
 import { ensureStrNumber } from '../utils/decimalts'
 
 export function aggregateIntoId(
@@ -158,15 +158,15 @@ export const handleVaultDissolved = async ({
     vaultId[1].toString()
   )
   try {
-    await VaultsDissolve.create({
+    let vault = await Vaults.get(aggregateVaultId)
+
+    await DissolvedVault.create({
       id: idx.toString(),
       vaultId: aggregateVaultId,
+      createdAt: vault.createdAt,
       dissolvedBlockHeight: header.number.toNumber()
     }).save()
-
-    let vault = await Vaults.get(aggregateVaultId)
-    vault.phase = 'Cancelled'
-    await vault.save()
+    await Vaults.remove(aggregateVaultId)
     logger.info(`#${header.number.toNumber()} handle VaultDissolved: ${vault}`)
   } catch (error) {
     logger.error('handle VaultDissolved error: ', error)

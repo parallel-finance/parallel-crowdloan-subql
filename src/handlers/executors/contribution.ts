@@ -10,13 +10,15 @@ export const handleContributed = async ({
   block: {
     timestamp,
     block: { header }
-  }
+  },
+  extrinsic
 }: SubstrateEvent) => {
   const [paraId, vaultId, contributor, amount, _] = JSON.parse(
     data.toString()
   ) as [number, number[], string, string, string]
   const contributionRecord = Contribution.create({
     id: idx.toString(),
+    extrinsicHash: extrinsic.extrinsic.hash.toString(),
     vaultId: aggregateIntoId(
       paraId.toString(),
       vaultId[0].toString(),
