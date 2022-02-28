@@ -18,7 +18,7 @@ export const handleVaultCreated = async ({
 }: SubstrateEvent) => {
   const [
     paraId,
-    vaultId,
+    [leaseStart, leaseEnd],
     ctokenId,
     phase,
     contributionStrategy,
@@ -37,11 +37,13 @@ export const handleVaultCreated = async ({
   const vaultRecord = Vaults.create({
     id: aggregateIntoId(
       paraId.toString(),
-      vaultId[0].toString(),
-      vaultId[1].toString()
+      leaseStart.toString(),
+      leaseEnd.toString()
     ),
     createdAt: header.number.toNumber(),
     paraId,
+    leaseStart,
+    leaseEnd,
     ctokenId,
     phase,
     contributionCount: 0,

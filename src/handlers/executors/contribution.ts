@@ -25,7 +25,6 @@ export const handleContributed = async ({
       vaultId[1].toString()
     ),
     blockHeight: header.number.toNumber(),
-    paraId,
     account: convertToAnyChainAddress(contributor),
     amount: ensureStrNumber(amount),
     timestamp: timestamp

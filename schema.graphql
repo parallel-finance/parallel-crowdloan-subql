@@ -1,7 +1,6 @@
 type Contribution @entity {
   id: ID!
   extrinsicHash: String! @index
-  paraId: Int! @index
   vault: Vaults! @index
   blockHeight: Int! @index
   account: String! @index
@@ -13,6 +12,8 @@ type Vaults @entity {
   id: ID!
   createdAt: Int
   paraId: Int! @index
+  leaseStart: Int!
+  leaseEnd: Int!
   ctokenId: Int!
   phase: String!
   contributionCount: Int!
