@@ -44,7 +44,7 @@ export const handleVaultCreated = async ({
     paraId,
     ctokenId,
     phase,
-    contributions: 0,
+    contributionCount: 0,
     totalAmount: '0',
     contributionStrategy,
     cap: ensureStrNumber(cap),
@@ -166,7 +166,7 @@ export const handleVaultDissolved = async ({
       createdAt: vault.createdAt,
       dissolvedBlockHeight: header.number.toNumber(),
       totalAmount: vault.totalAmount,
-      contributions: vault.contributions
+      contributionCount: vault.contributionCount
     }).save()
     await Vaults.remove(aggregateVaultId)
     logger.info(`#${header.number.toNumber()} handle VaultDissolved: ${vault}`)
@@ -178,7 +178,7 @@ export const handleVaultDissolved = async ({
 export const updateVaultSummary = async (vault: string, amount: string) => {
   let vaultRecord = await Vaults.get(vault)
   if (vaultRecord) {
-    vaultRecord.contributions += 1
+    vaultRecord.contributionCount += 1
     vaultRecord.totalAmount = ensureStrNumber(
       (BigInt(vaultRecord.totalAmount) + BigInt(amount)).toString()
     )

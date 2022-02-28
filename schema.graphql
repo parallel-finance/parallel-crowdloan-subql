@@ -15,7 +15,7 @@ type Vaults @entity {
   paraId: Int! @index
   ctokenId: Int!
   phase: String!
-  contributions: Int!
+  contributionCount: Int!
   totalAmount: String!
   contributionStrategy: String!
   cap: String!
@@ -27,6 +27,6 @@ type DissolvedVault @entity {
   vaultId: String! @index
   createdAt: Int! @index
   dissolvedBlockHeight: Int! @index
-  contributions: Int!
+  contributionCount: Int!
   totalAmount: String!
 }
