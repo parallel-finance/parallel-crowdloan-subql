@@ -5,6 +5,7 @@ import { convertToAnyChainAddress } from '../utils/address'
 import { ensureStrNumber } from '../utils/decimalts'
 
 export const handleContributed = async ({
+  idx,
   event: { data },
   block: {
     timestamp,
@@ -12,17 +13,20 @@ export const handleContributed = async ({
   },
   extrinsic
 }: SubstrateEvent) => {
-  const [paraId, vaultId, contributor, amount, referralCode] = JSON.parse(
+  const [paraId, vaultId, contributor, amount] = JSON.parse(
     data.toString()
   ) as [number, number[], string, string, string]
   const contributionRecord = Contribution.create({
-    id: extrinsic.extrinsic.hash.toString(),
-    vaultId: vaultId[0].toString() + '-' + vaultId[1].toString(),
+    id: idx.toString(),
+    extrinsicHash: extrinsic.extrinsic.hash.toString(),
+    vaultId: aggregateIntoId(
+      paraId.toString(),
+      vaultId[0].toString(),
+      vaultId[1].toString()
+    ),
     blockHeight: header.number.toNumber(),
-    paraId,
     account: convertToAnyChainAddress(contributor),
     amount: ensureStrNumber(amount),
-    referralCode,
     timestamp: timestamp
   })
 
@@ -30,9 +34,17 @@ export const handleContributed = async ({
     await contributionRecord.save()
 
     // Update vault summary if contributed
-    let vault = aggregateIntoId(paraId.toString(), vaultId[0].toString(), vaultId[1].toString())
+    let vault = aggregateIntoId(
+      paraId.toString(),
+      vaultId[0].toString(),
+      vaultId[1].toString()
+    )
     await updateVaultSummary(vault, amount)
-    logger.info(`#${header.number.toNumber()} handle Contributed ${JSON.stringify(contributionRecord)}`)
+    logger.info(
+      `#${header.number.toNumber()} handle Contributed ${JSON.stringify(
+        contributionRecord
+      )}`
+    )
   } catch (error) {
     logger.error('handle Contributed error: ', error)
   }
