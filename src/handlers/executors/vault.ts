@@ -164,7 +164,9 @@ export const handleVaultDissolved = async ({
       id: idx.toString(),
       vaultId: aggregateVaultId,
       createdAt: vault.createdAt,
-      dissolvedBlockHeight: header.number.toNumber()
+      dissolvedBlockHeight: header.number.toNumber(),
+      totalAmount: vault.totalAmount,
+      contributions: vault.contributions
     }).save()
     await Vaults.remove(aggregateVaultId)
     logger.info(`#${header.number.toNumber()} handle VaultDissolved: ${vault}`)
