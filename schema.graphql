@@ -21,6 +21,7 @@ type Vaults @entity {
   contributionStrategy: String!
   cap: String!
   endBlock: Int!
+  trieIndex: Int!
 }
 
 type DissolvedVault @entity {
