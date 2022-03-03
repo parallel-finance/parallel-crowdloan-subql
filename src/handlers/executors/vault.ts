@@ -23,7 +23,8 @@ export const handleVaultCreated = async ({
     phase,
     contributionStrategy,
     cap,
-    endBlock
+    endBlock,
+    trieIndex
   ] = JSON.parse(data.toString()) as [
     number,
     number[],
@@ -50,7 +51,8 @@ export const handleVaultCreated = async ({
     totalAmount: '0',
     contributionStrategy,
     cap: ensureStrNumber(cap),
-    endBlock: endBlock
+    endBlock: endBlock,
+    trieIndex: trieIndex
   })
 
   try {
