@@ -1,131 +1,99 @@
 # Parallel Crowdloan Subql
 
-## Query user contributions and summary information
+Based on [SubQuery](https://www.subquery.network/) project defines for collect the crowdloan data from Heiko or Parallel Substrate blockchain
 
-```graphql
-{
-  query {
-    contributions(last: 100, filter: { paraId: { equalTo: 2001 } }) {
-      nodes {
-        id
-        blockHeight
-        paraId
-        account
-        amount
-        referralCode
-      }
-    }
-    vaultSummaries(last: 100) {
-      nodes {
-        id
-        amount
-        contributions
-      }
-    }
-  }
-}
-```
+## Development
 
-## SubQuery - Starter Package
-
-The Starter Package is an example that you can use as a starting point for developing your SubQuery project.
-A SubQuery package defines which data The SubQuery will index from the Substrate blockchain, and how it will store it.
-
-## Preparation
-
-#### Environment
-
-- [Typescript](https://www.typescriptlang.org/) are required to compile project and define types.
-
-- Both SubQuery CLI and generated Project have dependencies and require [Node](https://nodejs.org/en/).
-
-#### Install the SubQuery CLI
-
-Install SubQuery CLI globally on your terminal by using NPM:
-
-```
-npm install -g @subql/cli
-```
-
-Run help to see available commands and usage provide by CLI
-
-```
-subql help
-```
-
-## Initialize the starter package
-
-Inside the directory in which you want to create the SubQuery project, simply replace `project-name` with your project name and run the command:
-
-```
-subql init --starter project-name
-```
-
-Then you should see a folder with your project name has been created inside the directory, you can use this as the start point of your project. And the files should be identical as in the [Directory Structure](https://doc.subquery.network/directory_structure.html).
-
-Last, under the project directory, run following command to install all the dependency.
-
-```
-yarn install
-```
-
-## Configure your project
-
-In the starter package, we have provided a simple example of project configuration. You will be mainly working on the following files:
-
-- The Manifest in `project.yaml`
-- The GraphQL Schema in `schema.graphql`
-- The Mapping functions in `src/mappings/` directory
-
-For more information on how to write the SubQuery,
-check out our doc section on [Define the SubQuery](https://doc.subquery.network/define_a_subquery.html)
-
-#### Code generation
-
-In order to index your SubQuery project, it is mandatory to build your project first.
-Run this command under the project directory.
-
-```
-yarn codegen
-```
-
-## Build the project
-
-In order to deploy your SubQuery project to our hosted service, it is mandatory to pack your configuration before upload.
-Run pack command from root directory of your project will automatically generate a `your-project-name.tgz` file.
-
-```
-yarn build
-```
-
-## Indexing and Query
-
-#### Run required systems in docker
-
-Under the project directory run following command:
+### Start project in Docker
 
 ```
 docker-compose pull && docker-compose up
 ```
 
-#### Query the project
+### Query data
 
-Open your browser and head to `http://localhost:3000`.
+open your browser and head to `http://localhost:3000`.
 
 Finally, you should see a GraphQL playground is showing in the explorer and the schemas that ready to query.
-
-For the `subql-starter` project, you can try to query with the following code to get a taste of how it works.
 
 ```graphql
 {
   query {
-    starterEntities(first: 10) {
+    contributions(first: 5) {
       nodes {
-        field1
-        field2
-        field3
+        id
+        extrinsicHash
+        vaultId
+        blockHeight
+      }
+    }
+    vaults(first: 5) {
+      nodes {
+        id
+        createdAt
+        paraId
+        leaseStart
       }
     }
   }
 }
 ```
+
+## Deployment
+
+### Yarn install the dependencies
+
+```
+yarn
+```
+
+### Generate schema types
+
+```
+yarn codegen
+```
+
+### Run build to make sure the project can built successfully
+
+```
+yarn build
+```
+
+### Publish project to IPFS
+
+[IPFS deployment](https://doc.subquery.network/publish/ipfs/#) is the new way from subquery team to do the deployment.
+
+Before publish, make sure run `yarn build` successfully.
+
+#### Generate IPFS CID
+
+- Publishing project For staging blockchain
+
+  ```
+  yarn ipfs:publish
+  ```
+
+- Publishing project for Heiko blockchain
+
+  ```
+  yarn ipfs:publish -f heiko.yaml
+  ```
+
+- Publishing project for Parallel blockchain
+
+  TBD
+
+The response should be as following:
+
+```
+Building and packing code... done
+Uploading SupQuery project to IPFS
+SubQuery Project uploaded to IPFS: <CID>
+```
+
+#### Deploy slot with IPFS `CID`
+
+Go To subQuery project page, click Deploy button and enter the CID you previously get
+
+- Heiko: https://project.subquery.network/project/parallel-finance/crowdloan-via-heiko
+- Parallel: TBD
