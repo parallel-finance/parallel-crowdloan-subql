@@ -4,13 +4,11 @@
   "description": "",
   "main": "dist/index.js",
   "scripts": {
-    "build": "tsc -b",
-    "prepack": "rm -rf dist && npm build",
-    "test": "jest",
-    "codegen": "./node_modules/.bin/subql codegen",
+    "codegen": "subql codegen",
+    "build": "subql build",
+    "ipfs:publish": "subql publish",
     "format": "prettier --config .prettierrc.json 'src/**/*.ts' --write",
-    "docker-compose": "docker-compose pull && docker-compose up",
-    "launch": "rm -rf .data && yarn codegen && yarn build && yarn docker-compose"
+    "docker-compose": "docker-compose pull && docker-compose up"
   },
   "homepage": "https://github.com/subquery/subql-starter",
   "repository": "github:subquery/subql-starter",

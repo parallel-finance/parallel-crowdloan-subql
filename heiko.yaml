@@ -1,16 +1,17 @@
 specVersion: 0.2.0
-name: parallel-crowdloan-subql
+name: heiko-crowdloan-subql
 version: 1.0.0
-description: ''
+description: 'crowdloan feature via Heiko'
 repository: 'https://github.com/parallel-finance/parallel-crowdloan-subql'
 schema:
   file: ./schema.graphql
 network:
-  genesisHash: '0x04101471e0bf533db7a5efbc5dcf70412394adee7b8848db54c33f1b78fe2eb2'
-  endpoint: 'wss://staging-rpc.parallel.fi'
+  genesisHash: '0x64a1c658a48b2e70a7fb1ad4c39eea35022568c20fc44a6e2e3d0a57aee6053b'
+  endpoint: 'wss://heiko-rpc.parallel.fi'
+  dictionary: 'https://api.subquery.network/sq/subquery/parallel-heiko-dictionary'
 dataSources:
   - kind: substrate/Runtime
-    startBlock: 1
+    startBlock: 868228
     mapping:
       file: ./dist/index.js
       handlers:
