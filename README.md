@@ -63,7 +63,7 @@ yarn build
 
 [IPFS deployment](https://doc.subquery.network/publish/ipfs/#) is the new way from subquery team to do the deployment.
 
-Before publish, make sure run `yarn build` successfully.
+Before publish, make sure run `yarn build` successfully. And please check if the [genesisHash](https://doc.subquery.network/create/manifest/#custom-chains) in yaml file is correct for the blockchain you want to collect. 
 
 #### Generate IPFS CID
 
