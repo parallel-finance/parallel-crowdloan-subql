@@ -95,5 +95,6 @@ SubQuery Project uploaded to IPFS: <CID>
 
 Go To subQuery project page, click Deploy button and enter the CID you previously get
 
+- Staging: https://project.subquery.network/project/crystalynliu/staging-crowdloan-pallet
 - Heiko: https://project.subquery.network/project/parallel-finance/crowdloan-via-heiko
 - Parallel: TBD
