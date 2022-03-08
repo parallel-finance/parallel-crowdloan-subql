@@ -17,7 +17,7 @@ export const handleContributed = async ({
     data.toString()
   ) as [number, number[], string, string, string]
   const contributionRecord = Contribution.create({
-    id: idx.toString(),
+    id: `${extrinsic.extrinsic.hash.toString()}-${idx}`,
     extrinsicHash: extrinsic.extrinsic.hash.toString(),
     vaultId: aggregateIntoId(
       paraId.toString(),
