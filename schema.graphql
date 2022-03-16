@@ -29,6 +29,6 @@ type DissolvedVault @entity {
   vaultId: String! @index
   createdAt: Int! @index
   dissolvedBlockHeight: Int! @index
-  contributionCount: Int!
   totalAmount: String!
+  contributionCount: Int!
 }

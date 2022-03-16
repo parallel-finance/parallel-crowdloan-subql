@@ -1,5 +1,5 @@
 import { SubstrateEvent } from '@subql/types'
-import { DissolvedVault, Vaults } from '../../types'
+import { DissolvedVault, Vaults, Contribution } from '../../types'
 import { ensureStrNumber } from '../utils/decimalts'
 
 export function aggregateIntoId(
@@ -150,6 +150,9 @@ export const handleVaultPhaseUpdated = async ({
 export const handleVaultDissolved = async ({
   idx,
   event: { data },
+  extrinsic: {
+    extrinsic: { hash }
+  },
   block: {
     block: { header }
   }
@@ -161,19 +164,36 @@ export const handleVaultDissolved = async ({
     vaultId[0].toString(),
     vaultId[1].toString()
   )
+
+  logger.info(
+    `#${header.number.toNumber()} handle VaultDissolved: ${aggregateVaultId}`
+  )
+
   try {
     let vault = await Vaults.get(aggregateVaultId)
 
     await DissolvedVault.create({
-      id: idx.toString(),
+      id: `${hash.toString()}-${idx.toString()}`,
       vaultId: aggregateVaultId,
       createdAt: vault.createdAt,
       dissolvedBlockHeight: header.number.toNumber(),
       totalAmount: vault.totalAmount,
       contributionCount: vault.contributionCount
     }).save()
-    await Vaults.remove(aggregateVaultId)
-    logger.info(`#${header.number.toNumber()} handle VaultDissolved: ${vault}`)
+
+    while (true) {
+      const contributions = await Contribution.getByVaultId(vault.id)
+      if (contributions.length === 0) {
+        break
+      } else {
+        // Can't use promise all, because it contains a transaction.
+        for (let contribution of contributions) {
+          await Contribution.remove(contribution.id)
+        }
+      }
+    }
+
+    await Vaults.remove(vault.id)
   } catch (error) {
     logger.error('handle VaultDissolved error: ', error)
   }
