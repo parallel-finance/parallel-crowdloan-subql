@@ -1,4 +1,4 @@
-name: Deploy with Heiko RPC
+name: Deploy with Parallel RPC
 
 on:
   workflow_dispatch:
