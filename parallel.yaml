@@ -1,0 +1,21 @@
+specVersion: 0.2.0
+name: parallel-crowdloan-subql
+version: 1.0.0
+description: 'crowdloan feature via Parallel'
+repository: 'https://github.com/parallel-finance/parallel-crowdloan-subql'
+schema:
+  file: ./schema.graphql
+network:
+  genesisHash: '0xe61a41c53f5dcd0beb09df93b34402aada44cb05117b71059cce40a2723a4e97'
+  endpoint: 'wss://rpc.parallel.fi'
+  dictionary: 'https://api.subquery.network/sq/subquery/parallel-dictionary'
+dataSources:
+  - kind: substrate/Runtime
+    startBlock: 653350
+    mapping:
+      file: ./dist/index.js
+      handlers:
+        - handler: handleEvent
+          kind: substrate/EventHandler
+          filter:
+            module: crowdloans
