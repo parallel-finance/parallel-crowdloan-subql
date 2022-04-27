@@ -20,6 +20,7 @@
   "author": "Parallel Team",
   "license": "MIT",
   "devDependencies": {
+    "@parallel-finance/type-definitions": "^1.6.5",
     "@polkadot/api": "^7",
     "@subql/cli": "latest",
     "@subql/types": "latest",
