@@ -1,16 +1,23 @@
-specVersion: 0.2.0
+specVersion: 1.0.0
 name: parallel-crowdloan-subql
 version: 1.0.0
 description: ''
 repository: 'https://github.com/parallel-finance/parallel-crowdloan-subql'
+runner:
+  node:
+    name: '@subql/node'
+    version: '0.33.0'
+  query:
+    name: '@subql/query'
+    version: '^0.12.0'
 schema:
   file: ./schema.graphql
 network:
-  genesisHash: '0x5af9097d0e1c7a3b125a94c9579ca700490d337c655e1d72d05279b3b52253ae'
-  endpoint: 'wss://staging-rpc.parallel.fi'
+  endpoint: 'wss://regnet2-rpc.parallel.fi'
+  genesisHash: '0xd3799a78c35fb11ef09ad18e2de227f5f6d4a0521a45235058375c9eea6c673f'
 dataSources:
   - kind: substrate/Runtime
-    startBlock: 1
+    startBlock: 135000
     mapping:
       file: ./dist/index.js
       handlers:
