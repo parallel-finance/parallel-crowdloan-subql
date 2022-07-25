@@ -1,8 +1,15 @@
-specVersion: 0.2.0
+specVersion: 1.0.0
 name: parallel-crowdloan-subql
 version: 1.0.0
 description: 'crowdloan feature via Parallel'
 repository: 'https://github.com/parallel-finance/parallel-crowdloan-subql'
+runner:
+  node:
+    name: '@subql/node'
+    version: '0.33.0'
+  query:
+    name: '@subql/query'
+    version: '^0.12.0'
 schema:
   file: ./schema.graphql
 network:
@@ -11,7 +18,7 @@ network:
   dictionary: 'https://api.subquery.network/sq/subquery/parallel-dictionary'
 dataSources:
   - kind: substrate/Runtime
-    startBlock: 653350
+    startBlock: 1294406
     mapping:
       file: ./dist/index.js
       handlers:
